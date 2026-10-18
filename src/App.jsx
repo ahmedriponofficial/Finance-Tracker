@@ -4604,7 +4604,24 @@ function SettingsSheet({
           <Group title="Account">
             <Row icon={<User size={16} />} label={accountEmail}
               value={syncProblem ? "Not synced" : "Synced"} />
-            <Row icon={<LogOut size={16} />} label="Sign out" onClick={onSignOut} />
+            <Row icon={<LogOut size={16} />} label="Sign out"
+              onClick={() => setConfirm(syncProblem
+                ? {
+                    /* unsynced edits only exist on this phone; signing out now
+                       and back in later would load the older cloud copy */
+                    title: "Changes not synced yet",
+                    message: "Some of your latest changes haven't reached your account yet. If you sign out now they may be lost. Connect to the internet and wait for it to say Synced first.",
+                    confirmLabel: "Sign out anyway",
+                    danger: true,
+                    action: onSignOut,
+                  }
+                : {
+                    title: "Sign out?",
+                    message: `Your records stay safe in your account. Sign in again with ${accountEmail} to see them.`,
+                    confirmLabel: "Sign out",
+                    danger: false,
+                    action: onSignOut,
+                  })} />
             <Row icon={<Trash2 size={16} />} last onClick={() => setSub("deleteUser")}
               label={<span style={{ color: C.expense }}>Delete account</span>} />
           </Group>
